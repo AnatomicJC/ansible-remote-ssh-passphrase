@@ -1,0 +1,38 @@
+---
+- name: Install dropbear
+  apt:
+    name=dropbear
+    state=latest
+
+- name: Copy Dropbear public key
+  template:
+    src: authorized_keys
+    dest: /etc/dropbear-initramfs/authorized_keys
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Get remote ssh network params
+  set_fact:
+    remote_ssh_passphrase_module: "{{ hostvars[inventory_hostname]['ansible_' + item]['module'] }}"
+    remote_ssh_passphrase_interface: "{{ hostvars[inventory_hostname]['ansible_' + item]['device'] }}"
+  with_items: "{{ hostvars[inventory_hostname]['ansible_interfaces'] }}"
+  when: "hostvars[inventory_hostname]['ansible_' + item]['macaddress'] | default('') == hostvars[inventory_hostname]['ansible_default_ipv4']['macaddress'] and hostvars[inventory_hostname]['ansible_' + item]['type'] == 'ether'"
+
+# http://docs.ansible.com/ansible/faq.html#how-do-i-access-a-variable-name-programmatically
+- name: Add default network card module to initramfs
+  lineinfile:
+    dest: "{{ item.dest }}"
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+      - dest: '/etc/initramfs-tools/modules'
+        line: "{{ remote_ssh_passphrase_module }}"
+        regexp: '^'
+      - dest: '/etc/default/grub'
+        line: "GRUB_CMDLINE_LINUX=\"ip={{ ansible_default_ipv4.address }}::{{ ansible_default_ipv4.gateway }}:{{ ansible_default_ipv4.netmask }}::{{ remote_ssh_passphrase_interface }}:off\""
+        regexp: '^GRUB_CMDLINE_LINUX='
+  notify:
+    - Rebuild initramfs
+    - update-grub
