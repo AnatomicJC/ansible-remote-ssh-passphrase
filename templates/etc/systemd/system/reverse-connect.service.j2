@@ -1,0 +1,11 @@
+[Unit]
+Description=reverse-connect
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/reverse-connect
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

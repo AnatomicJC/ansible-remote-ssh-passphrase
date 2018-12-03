@@ -1,0 +1,27 @@
+---
+- name: Check if remote_ssh_passphrase_dropbear_public_key has been defined
+  fail:
+    msg="remote_ssh_passphrase_dropbear_public_key is not defined"
+  when: not remote_ssh_passphrase_dropbear_public_key
+- name: Check if cryptsetup is configured
+  stat:
+    path: /etc/crypttab
+  register: p
+  changed_when: False
+  failed_when: False
+
+- name: Check if crypted partitions are set
+  shell: grep -qvE "^#" /etc/crypttab
+  register: crypted
+  ignore_errors: yes
+  changed_when: False
+  when: p.stat.exists
+
+- import_tasks: set_remote_ssh_passphrase.yml
+  when: p.stat.exists and crypted.rc == 0
+
+- import_tasks: set_remote_ssh_reverse_connect.yml
+  when: remote_ssh_passphrase_ruser_private_key and remote_ssh_passphrase_reverse_connect_reverse_server and remote_ssh_passphrase_reverse_connect_reverse_port
+
+- import_tasks: set_remote_ssh_initramfs.yml
+  when: remote_ssh_passphrase_ruser_private_key and remote_ssh_passphrase_reverse_connect_reverse_server and remote_ssh_passphrase_reverse_connect_reverse_port

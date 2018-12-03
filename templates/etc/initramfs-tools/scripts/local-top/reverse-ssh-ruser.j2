@@ -1,0 +1,26 @@
+#!/bin/sh
+PREREQ=""
+prereqs()
+{
+     echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+     prereqs
+     exit 0
+     ;;
+esac
+
+# Begin real processing below this line
+ifconfig lo 127.0.0.1 netmask 255.0.0.0 up
+sleep 5
+{% if remote_ssh_passphrase_reverse_connect_reverse_server and remote_ssh_passphrase_reverse_connect_reverse_port %}
+REVERSE_SERVER={{ remote_ssh_passphrase_reverse_connect_reverse_server }}
+REVERSE_PORT={{ remote_ssh_passphrase_reverse_connect_reverse_port }}
+
+while true; do
+  /sbin/ssh -i /root/.ssh/ruser ruser@${REVERSE_SERVER} -R${REVERSE_PORT}:127.0.0.1:22 -p443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=3 &> /dev/null
+  sleep 30
+done &
+{% endif %}

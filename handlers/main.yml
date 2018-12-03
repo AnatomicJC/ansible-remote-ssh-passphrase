@@ -1,0 +1,11 @@
+---
+- name: restart reverse-connect service
+  systemd:
+    state: "restarted"
+    daemon_reload: "yes"
+    name: "{{ item }}"
+  with_items:
+    - reverse-connect
+
+- name: Rebuild initramfs
+  command: update-initramfs -u

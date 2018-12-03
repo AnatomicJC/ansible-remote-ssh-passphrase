@@ -1,0 +1,10 @@
+---
+- name: Add initramfs reverse-connect script
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    mode: "0755"
+  with_items:
+    - etc/initramfs-tools/hooks/reverse-ssh-client
+    - etc/initramfs-tools/scripts/local-top/reverse-ssh-ruser
+  notify: Rebuild initramfs

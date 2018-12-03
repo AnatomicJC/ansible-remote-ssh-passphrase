@@ -1,0 +1,14 @@
+#!/bin/sh
+
+{% if remote_ssh_passphrase_reverse_connect_reverse_server and remote_ssh_passphrase_reverse_connect_reverse_port %}
+kill $(ps ax | grep "/bin/sh /scripts/local-top/reverse-ssh-ruser" | awk '{print $1}')
+kill $(ps ax | grep "/sbin/ssh " | awk '{print $1}')
+
+REVERSE_SERVER={{ remote_ssh_passphrase_reverse_connect_reverse_server }}
+REVERSE_PORT={{ remote_ssh_passphrase_reverse_connect_reverse_port }}
+
+while true; do
+  /usr/bin/ssh -i /root/.ssh/ruser ruser@${REVERSE_SERVER} -R${REVERSE_PORT}:127.1:22 -p443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=3 > /dev/null
+  sleep 30
+done
+{% endif %}
