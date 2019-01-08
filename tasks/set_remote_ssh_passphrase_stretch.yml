@@ -14,10 +14,10 @@
 
 - name: Get remote ssh network params
   set_fact:
-    remote_ssh_passphrase_module: "{{ hostvars[inventory_hostname]['ansible_' + item]['module'] }}"
-    remote_ssh_passphrase_interface: "{{ hostvars[inventory_hostname]['ansible_' + item]['device'] }}"
+    remote_ssh_passphrase_module: "{{ hostvars[inventory_hostname]['ansible_' + item | replace('-', '_')]['module'] }}"
+    remote_ssh_passphrase_interface: "{{ hostvars[inventory_hostname]['ansible_' + item | replace('-', '_')]['device'] }}"
   with_items: "{{ hostvars[inventory_hostname]['ansible_interfaces'] }}"
-  when: "hostvars[inventory_hostname]['ansible_' + item]['macaddress'] | default('') == hostvars[inventory_hostname]['ansible_default_ipv4']['macaddress'] and hostvars[inventory_hostname]['ansible_' + item]['type'] == 'ether'"
+  when: "hostvars[inventory_hostname]['ansible_' + item | replace('-', '_')]['macaddress'] | default('') == hostvars[inventory_hostname]['ansible_default_ipv4']['macaddress'] and hostvars[inventory_hostname]['ansible_' + item | replace('-', '_')]['type'] == 'ether'"
 
 # http://docs.ansible.com/ansible/faq.html#how-do-i-access-a-variable-name-programmatically
 - name: Add default network card module to initramfs
