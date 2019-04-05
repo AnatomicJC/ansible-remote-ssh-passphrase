@@ -28,3 +28,5 @@
 
 - import_tasks: set_remote_ssh_initramfs.yml
   when: remote_ssh_passphrase_ruser_private_key and remote_ssh_passphrase_reverse_connect_reverse_server and remote_ssh_passphrase_reverse_connect_reverse_port
+
+- meta: flush_handlers
