@@ -10,9 +10,9 @@
 - name: Rebuild initramfs
   command: update-initramfs -u
   environment:
-    PATH: "${PATH}:/sbin:/usr/sbin"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 - name: update-grub
   command: update-grub
   environment:
-    PATH: "${PATH}:/sbin:/usr/sbin"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
