@@ -1,4 +1,4 @@
-remote_ssh_passphrase_dropbear_public_key: False
-remote_ssh_passphrase_reverse_connect_reverse_server: False
-remote_ssh_passphrase_reverse_connect_reverse_port: False
-remote_ssh_passphrase_ruser_private_key: False
+remote_ssh_passphrase_dropbear_public_key: ""
+remote_ssh_passphrase_reverse_connect_reverse_server: ""
+remote_ssh_passphrase_reverse_connect_reverse_port: ""
+remote_ssh_passphrase_ruser_private_key: ""

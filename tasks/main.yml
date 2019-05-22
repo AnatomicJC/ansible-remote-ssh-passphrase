@@ -2,7 +2,7 @@
 - name: Check if remote_ssh_passphrase_dropbear_public_key has been defined
   fail:
     msg="remote_ssh_passphrase_dropbear_public_key is not defined"
-  when: not remote_ssh_passphrase_dropbear_public_key
+  when: remote_ssh_passphrase_dropbear_public_key|length == 0
 - name: Check if cryptsetup is configured
   stat:
     path: /etc/crypttab
@@ -24,9 +24,9 @@
   when: p.stat.exists and crypted.rc == 0 and ansible_distribution == 'Debian' and ansible_distribution_major_version >= '9'
 
 - import_tasks: set_remote_ssh_reverse_connect.yml
-  when: remote_ssh_passphrase_ruser_private_key|bool and remote_ssh_passphrase_reverse_connect_reverse_server|bool and remote_ssh_passphrase_reverse_connect_reverse_port|bool
+  when: remote_ssh_passphrase_ruser_private_key|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_server|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_port|length > 0
 
 - import_tasks: set_remote_ssh_initramfs.yml
-  when: remote_ssh_passphrase_ruser_private_key|bool and remote_ssh_passphrase_reverse_connect_reverse_server|bool and remote_ssh_passphrase_reverse_connect_reverse_port|bool
+  when: remote_ssh_passphrase_ruser_private_key|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_server|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_port|length > 0
 
 - meta: flush_handlers
