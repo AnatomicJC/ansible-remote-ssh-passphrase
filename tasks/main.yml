@@ -11,7 +11,7 @@
   failed_when: False
 
 - name: Check if crypted partitions are set
-  shell: grep -qvE "^#" /etc/crypttab
+  command: grep -qvE "^#" /etc/crypttab
   register: crypted
   ignore_errors: yes
   changed_when: False
@@ -24,9 +24,15 @@
   when: p.stat.exists and crypted.rc == 0 and ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 9
 
 - import_tasks: set_remote_ssh_reverse_connect.yml
-  when: remote_ssh_passphrase_ruser_private_key|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_server|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_port|length > 0
+  when:
+    - remote_ssh_passphrase_ruser_private_key|length > 0
+    - remote_ssh_passphrase_reverse_connect_reverse_server|length > 0
+    - remote_ssh_passphrase_reverse_connect_reverse_port|length > 0
 
 - import_tasks: set_remote_ssh_initramfs.yml
-  when: remote_ssh_passphrase_ruser_private_key|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_server|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_port|length > 0
+  when:
+    - remote_ssh_passphrase_ruser_private_key|length > 0
+    - remote_ssh_passphrase_reverse_connect_reverse_server|length > 0
+    - remote_ssh_passphrase_reverse_connect_reverse_port|length > 0
 
 - meta: flush_handlers
