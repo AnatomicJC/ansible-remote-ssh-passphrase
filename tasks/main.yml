@@ -18,10 +18,10 @@
   when: p.stat.exists|bool
 
 - import_tasks: set_remote_ssh_passphrase_jessie.yml
-  when: p.stat.exists and crypted.rc == 0 and ansible_distribution == 'Debian' and ansible_distribution_major_version <= '8'
+  when: p.stat.exists and crypted.rc == 0 and ansible_distribution == 'Debian' and ansible_distribution_major_version|int <= 8
 
 - import_tasks: set_remote_ssh_passphrase_stretch.yml
-  when: p.stat.exists and crypted.rc == 0 and ansible_distribution == 'Debian' and ansible_distribution_major_version >= '9'
+  when: p.stat.exists and crypted.rc == 0 and ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 9
 
 - import_tasks: set_remote_ssh_reverse_connect.yml
   when: remote_ssh_passphrase_ruser_private_key|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_server|length > 0 and remote_ssh_passphrase_reverse_connect_reverse_port|length > 0
